@@ -114,11 +114,19 @@ export default function Index() {
       >
         <Text style={styles.registerButtonText}>Register</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.registerButton}
+        onPress={() => { router.push("/(tabs)/login/register") }}>
+
+        <Text style={styles.registerButtonText}>login</Text>
+      </TouchableOpacity>
+
+  
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: "#ccc",

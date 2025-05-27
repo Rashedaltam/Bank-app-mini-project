@@ -1,14 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View } from "react-native";
+import React, { useContext } from "react";
+import { Redirect, Stack } from "expo-router";
+import { AuthContext } from "@/Context/Authcontext";
 
-const _layout = () => {
-  return (
-    <View>
-      <Text>_layout</Text>
-    </View>
-  )
-}
+const _layoutProtected = () => {
+  const { isAuthenticated } = useContext(AuthContext);
+  if (!isAuthenticated) {
+    return <Redirect href="/" />;
+  }
+  return <Stack></Stack>;
+};
 
-export default _layout
+export default _layoutProtected;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

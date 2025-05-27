@@ -1,12 +1,16 @@
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { loginFunction, registerFunction } from "@/api/auth";
 import { StyleSheet } from "react-native";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { router } from "expo-router";
+import { AuthContext } from "@/Context/Authcontext";
+import { getToken } from "@/api/storage";
 
 export default function Index() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { setIsAuthenticated } = useContext(AuthContext);
   const [image, setImage] = useState("");
   const registerInput = {
     username,
@@ -16,7 +20,7 @@ export default function Index() {
 
   const registerHandling = () => {
     console.log("register Input", registerInput);
-    mutate({username, image, password})
+    mutate({ username, image, password });
   };
 
   interface registerInput {
@@ -35,13 +39,36 @@ export default function Index() {
         registerInput.password
       ),
     onSuccess: () => {
-      // router.replace("/");
+      router.replace("/(tabs)/(protected)/home");
+      setIsAuthenticated(true);
       alert("Registered");
     },
     onError: (error) => {
       console.log(error.message);
     },
   });
+////// to keep user signied in after refresh
+ useEffect(() => {
+  const checkToken = async () => {
+    try {
+      const token = await getToken(); // ✅ safely attempt to read token
+      if (token) {
+        setIsAuthenticated(true); // ✅ mark user as logged in
+        ////// direct if "authinticated" to the desired page 
+        router.replace("/(tabs)/(protected)/home")
+        console.log('Token found, user is authenticated');
+
+      } else {
+        console.log('No token found, user is not authenticated');
+      }
+    } catch (error) {
+      console.error('Failed to check auth token:', error); // ✅ handle failure
+    }
+  };
+
+  checkToken();
+}, []);
+
   return (
     <View
       style={{
